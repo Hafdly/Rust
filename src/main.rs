@@ -15,12 +15,12 @@ async fn main() -> std::io::Result<()> {
     dotenv::dotenv().ok();
     let thread_counter = Arc::new(AtomicU16::new(1));
     let saludar = std::env::var("saludar").unwrap_or("No Saludo al genio".to_string());
-    let thread_index = thread_counter.load(Ordering::SeqCst);
+    
     println!("{}",&saludar);
 
     
     HttpServer::new(move || {
-        
+        let thread_index = thread_counter.load(Ordering::SeqCst);
         println!("Starting thread {}", thread_counter.fetch_add(1, Ordering::SeqCst));
         App::new()
             .route("/", web::get().to(greet))
